@@ -41,7 +41,7 @@ int my_put_str(char const *str)
     return 0;
 }
 
-int to_display(va_list args, int i, char const *format)
+static int to_display(va_list args, int i, char const *format)
 {
     int nbr = 0;
     int d = i + 1;
@@ -79,4 +79,10 @@ int mini_printf(char const *format, ...)
     }
     va_end(args);
     return i;
+}
+
+int main(int ac, char **av)
+{
+    mini_printf("daniel a %d ans", 19);
+    return 0;
 }
