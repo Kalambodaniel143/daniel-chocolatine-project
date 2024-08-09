@@ -20,9 +20,10 @@ jobs:
             - name: checkout repository
               uses: actions/checkout@v4
             - name: runs the coding style checker script
-              run: check.sh $(pwd) $(pwd)
-            - name: dispaly error coding_style
-              run: cat $(pwd)/coding-style-reports.log
+              run: |
+                  check.sh $(pwd) $(pwd)
+                  cat $(pwd)/coding-style-reports.log
+                    
     check_program_compilation:
         needs: [check_coding_style]
         runs-on: ubuntu-latest
@@ -30,7 +31,7 @@ jobs:
           image: epitechcontent/epitest-docker
         timeout-minutes: 2
         steps:
-            - uses: action/checkout@v4
+            - uses: actions/checkout@v4
             - name: check_programm_compilation
               run: make
             - name: launch make clean
