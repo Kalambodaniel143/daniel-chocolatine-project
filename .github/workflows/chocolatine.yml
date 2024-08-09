@@ -1,0 +1,38 @@
+name: chocolatine
+
+on:
+  push :
+    branches-ignore :
+      - 'ga-ignore-**'
+  pull_request:
+    branches-ignore :
+      - 'ga-ignore-**'
+
+env:
+    MIRROR_URL: "git@github.com:Kalambodaniel143/daniel-chocolatine-project.git"
+    EXECUTABLES: "print_hello"
+jobs:
+    check_coding_style:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/epitech/coding-style-checker:latest
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v4
+            - name: runs the coding style checker script
+              run: check.sh $(pwd) $(pwd)
+            - name: dispaly error coding_style
+              run: cat $(pwd)/coding-style-reports.log
+    check_program_compilation:
+        needs: [check_coding_style]
+        runs-on: ubuntu-latest
+        container:
+          image: epitechcontent/epitest-docker
+        steps:
+            - uses: action/checkout@v4
+            - id: check_programm_compilation
+              run: make
+              timeout-minutes: 2
+            - run: make clean
+            
+
