@@ -20,10 +20,22 @@ jobs:
             - name: checkout repository
               uses: actions/checkout@v4
             - name: runs the coding style checker script
-              run: |
-                  check.sh $(pwd) $(pwd)
-                  cat $(pwd)/coding-style-reports.log
-                    
+              run: check.sh $(pwd) $(pwd)
+            - name: display coding style errors
+              run: |  
+                CODING_STYLE_ERROR=$( $(pwd)/coding-style-reports.log)
+                for ERRORS in $CODING_STYLE_ERROR; do
+                    array=(echo $ERRORS | sed 's/:/\n/g')
+                    echo "::error file=${array[1]#./},title=${array[3]#./} coding style errors detected: ${array[2]#./}::${array[4]#./}"
+                done
+                if [[-n $CODING_STYLE_ERRORS]]
+                then
+                  exit 1
+                else
+                  echo No coding style errors detected
+                fi
+
+
     check_program_compilation:
         needs: [check_coding_style]
         runs-on: ubuntu-latest
@@ -36,3 +48,11 @@ jobs:
             timeout-minutes: 2
           - name: launch make clean
             run: make clean
+          - run: |
+              OIFS = $IFS
+              IFS=','
+              for x in $EXECUTABLES
+                do
+                  ./$x $ARGUMENTS
+                done
+              IFS=$OIFS
