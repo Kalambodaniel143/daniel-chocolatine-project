@@ -28,11 +28,10 @@ jobs:
         runs-on: ubuntu-latest
         container:
           image: epitechcontent/epitest-docker
+        timeout-minutes: 2
         steps:
             - uses: action/checkout@v4
-            - id: check_programm_compilation
+            - name: check_programm_compilation
               run: make
-              timeout-minutes: 2
-            - run: make clean
-            
-
+            - name: launch make clean
+              run: make clean
